@@ -1,16 +1,15 @@
 import numpy as np
 
-board = np.zeros((7, 7), str)
+board = np.full((6, 7), '')
 
 
-def drop_token(token, x):
-    board[-1,x-1] = token
+def drop_token(token, col):
+    for x in reversed(range(6)):
+        if board[x, col-1] == '':
+            row = x
+            board[row, col - 1] = token
+            break
 
 
 if __name__ == '__main__':
-    print(board)
-    drop_token('Y',4)
-    print('')
-    print('***')
-    print('')
     print(board)

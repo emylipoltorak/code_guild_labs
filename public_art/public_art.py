@@ -1,12 +1,17 @@
 from geopy.geocoders import Nominatim
 from geopy.distance import vincenty
+import geocoder
 import pandas as pd
 
 
-def get_location(user_address):
-    geolocator = Nominatim(scheme='http')
-    location = geolocator.geocode(user_address)
-    return location.latitude, location.longitude
+def get_location(user_address=None):
+    if user_address:
+        geolocator = Nominatim(scheme='http')
+        location = geolocator.geocode(user_address)
+        return location.latitude, location.longitude
+    else:
+        location = geocoder.ip('me')
+        return location.latlng
 
 
 def get_data():
@@ -30,13 +35,13 @@ def find_nearby(user_loc, distance):
     return '\n'.join(art_list)
 
 
-def search():
-    pass
-
-
 def interface():
     while True:
-        u_address = get_location(input('What is your address? Include the city: '))
+        u_address = input('What is your address? Include the city, or enter x to use your current location: ')
+        if u_address == 'x':
+            u_address = get_location()
+        else:
+            u_address = get_location(u_address)
         dist = float(input('How far are you willing to travel? '))
         print(find_nearby(u_address, dist))
         cont = input('Would you like to search again? Y/N: ').lower()
@@ -45,7 +50,4 @@ def interface():
 
 
 if __name__ == '__main__':
-    # user_location = get_location('8427 SE 15th Ave Portland, OR')
-    # print(find_nearby(user_location, 2))
-
     interface()
